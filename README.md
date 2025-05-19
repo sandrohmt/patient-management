@@ -12,7 +12,7 @@ O sistema atualmente conta com dois microsserviços principais:
 ## Arquitetura e Tecnologias
 
 - **Java 21** e **Spring Boot** para desenvolvimento dos microsserviços.
-- **MySQL** como banco de dados para o patient-service, rodando em container Docker.
+- **PostgreSQL** como banco de dados para o patient-service, rodando em container Docker.
 - **Docker** para conteinerização tanto do banco de dados quanto dos microsserviços, facilitando a portabilidade e o isolamento.
 - **OpenAPI (Swagger)** para documentação e testes da API REST do patient-service.
 - **gRPC** para comunicação eficiente entre microsserviços (em desenvolvimento).
