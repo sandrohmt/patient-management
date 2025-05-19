@@ -1,0 +1,10 @@
+httpRequests/
+
+target/
+*.log
+
+.idea/
+*.iml
+httpRequests/**/*.json
+
+*.class
