@@ -1,9 +1,9 @@
-package com.pm.patient_service.controller;
+package com.pm.patientservice.controller;
 
-import com.pm.patient_service.dto.PatientRequestDTO;
-import com.pm.patient_service.dto.PatientResponseDTO;
-import com.pm.patient_service.dto.validators.CreatePatientValidationGroup;
-import com.pm.patient_service.service.PatientService;
+import com.pm.patientservice.dto.PatientRequestDTO;
+import com.pm.patientservice.dto.PatientResponseDTO;
+import com.pm.patientservice.dto.validators.CreatePatientValidationGroup;
+import com.pm.patientservice.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.groups.Default;

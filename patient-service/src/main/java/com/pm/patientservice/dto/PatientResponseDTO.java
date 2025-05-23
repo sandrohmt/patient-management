@@ -1,4 +1,4 @@
-package com.pm.patient_service.dto;
+package com.pm.patientservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;

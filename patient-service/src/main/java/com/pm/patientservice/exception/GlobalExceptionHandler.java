@@ -1,4 +1,4 @@
-package com.pm.patient_service.exception;
+package com.pm.patientservice.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

@@ -1,6 +1,6 @@
-package com.pm.patient_service.repository;
+package com.pm.patientservice.repository;
 
-import com.pm.patient_service.model.Patient;
+import com.pm.patientservice.model.Patient;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
