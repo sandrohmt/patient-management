@@ -11,3 +11,8 @@ message PatientEvent {
   string email = 3;
   string event_type = 4;
 }
+
+// Em Kafka, não existe chamada de serviço. É uma fila de mensagens (pub/sub).
+//    O produtor envia um evento pra um tópico (patient-events por exemplo).
+//    O consumidor escuta esse tópico e age quando um evento chega.
+// Não precisa de Request nem Response, porque o Kafka não é uma comunicação de pergunta e resposta. Você só manda dados (evento) e quem estiver interessado consome.
