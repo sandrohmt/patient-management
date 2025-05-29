@@ -22,6 +22,11 @@ spring:
 #    init:
 #      mode: always
 
+  kafka:
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer # O código do spring kafka terá uma key String
+      value-serializer: org.apache.kafka.common.serialization.ByteArraySerializer # E um value de byte array, ajuda o kafka template para dizer para ela qual tipo da mensagem é em vez de deixar ela mesmo configurar
+
 server:
   port: 4000
 
