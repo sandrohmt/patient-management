@@ -15,6 +15,7 @@ public class BillingGrpcService extends BillingServiceImplBase {
     public void createBillingAccount(billing.BillingRequest billingRequest,
          StreamObserver<BillingResponse> responseObserver) {
          log.info("createBillingAccount request received {}", billingRequest.toString());
+        // Lógica de negócios relacionados a billing aqui. Ex: Salvar no banco de dados, fazer cálculos, etc.
 
          BillingResponse response = BillingResponse.newBuilder()
                  .setAccountId("12345")
