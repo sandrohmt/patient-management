@@ -6,21 +6,22 @@ spring:
     gateway:
       routes:
         - id: patient-service-route
-          uri: http://patient-service/4000
-          predicates: # Quais requests são enviados para o patient-service
-            - path=/api/patients/**
-          filters: # Um jeito de reescrever o predicate antes de encaminhar a solicitação para o patient-service uri
-            - strip-prefix=1
+          uri: http://patient-service:4000
+          predicates: # Quais requests sï¿½o enviados para o patient-service
+            - Path=/api/patients/**
+          filters: # Um jeito de reescrever o predicate antes de encaminhar a solicitaï¿½ï¿½o para o patient-service uri
+            - StripPrefix=1
           # REST Client -> http://localhost:4004/api/patients
           # API Gateway -> http://patient-service:4000/patients    aqui aplica o filters
           # Patient Service (Spring Boot App) -> /patients -> Patients Array
           # Em resumo, o frontend chama o API Gateway e ele chama o patient-service baseado nas regras acima
+
         - id: api-docs-patient-route
-          uri: http://patient-service:4040
+          uri: http://patient-service:4000
           predicates:
-            - path=/api-docs/patients
+            - Path=/api-docs/patients
           filters:
-            - rewrite-path=/api/docs/patients,/v3/api-docs # Reescreve o path antes da virgula pro depois da virgula
+            - RewritePath=/api-docs/patients,/v3/api-docs # Reescreve o path antes da virgula pro depois da virgula
           # REST-Client -> http://localhost:4004/api-docs/patients
           # API Gateway -> http://patient-service:4000/v3/api-docs
 
