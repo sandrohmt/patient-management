@@ -5,6 +5,15 @@ spring:
   cloud:
     gateway:
       routes:
+        - id: auth-service-route
+          uri: http://auth-service:4005
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1 # Tira o conteúdo depois da primeira barra até a próxima, nesse caso, tira o auth
+          # REST Client -> http://localhost:4004/auth/login
+          # API Gateway -> http://auth-service:4005/login
+
         - id: patient-service-route
           uri: http://patient-service:4000
           predicates: # Quais requests s�o enviados para o patient-service
