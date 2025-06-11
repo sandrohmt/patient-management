@@ -10,7 +10,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Service
 public class UserService {
-    public UserRepository userRepository;
+    public final UserRepository userRepository;
 
     public Optional<User> findByEmail(String email) {
         return userRepository.findByEmail(email);
