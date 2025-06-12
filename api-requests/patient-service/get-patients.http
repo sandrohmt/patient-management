@@ -1,5 +1,5 @@
 ### GET request to get all patients
 GET http://localhost:4004/api/patients
-# Diferente agora por conta do API Gateway
+Authorization: Bearer {{token}}
 
 ###
