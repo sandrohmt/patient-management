@@ -35,5 +35,12 @@ spring:
           # REST-Client -> http://localhost:4004/api-docs/patients
           # API Gateway -> http://patient-service:4000/v3/api-docs
 
+        - id: api-docs-auth-route
+          uri: http://auth-service:4005
+          predicates:
+            - Path=/api-docs/auth
+          filters:
+            - RewritePath=/api-docs/auth,/v3/api-docs
+
 server:
   port: 4004
