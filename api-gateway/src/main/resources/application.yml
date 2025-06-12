@@ -20,6 +20,7 @@ spring:
             - Path=/api/patients/**
           filters: # Um jeito de reescrever o predicate antes de encaminhar a solicita��o para o patient-service uri
             - StripPrefix=1
+            - JwtValidation # O JwtValidationGatewayFilterFactory vai afetar todas as rotas do patient-service, o filtro vai procurar uma classe que tem GatewayFilterFactory no nome
           # REST Client -> http://localhost:4004/api/patients
           # API Gateway -> http://patient-service:4000/patients    aqui aplica o filters
           # Patient Service (Spring Boot App) -> /patients -> Patients Array
