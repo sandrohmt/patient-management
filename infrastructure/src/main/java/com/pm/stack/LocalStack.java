@@ -1,7 +1,11 @@
 package com.pm.stack;
 
+import software.amazon.awscdk.services.ec2.InstanceClass;
+import software.amazon.awscdk.services.ec2.InstanceSize;
+import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
+import software.amazon.awscdk.services.rds.*;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
@@ -10,12 +14,32 @@ public class LocalStack extends Stack {
         super(scope, id, props);
 
         this.vpc = createVpc();
+
+        DatabaseInstance authServiceDb =
+                createDatabase("AuthServiceDb", "auth-service-db");
+
+        DatabaseInstance patientServiceDb =
+                createDatabase("PatientServiceDb", "patient-service-db");
     }
 
     private Vpc createVpc() {
         return Vpc.Builder.create(this, "PatientManagementVPC") // this quer dizer a propria classe LocalStack
                 .vpcName("PatientManagementVPC")
                 .maxAzs(2)
+                .build();
+    }
+
+    private DatabaseInstance createDatabase(String id, String dbName) {
+        return DatabaseInstance.Builder
+                .create(this, id)
+                .engine(DatabaseInstanceEngine.postgres(PostgresInstanceEngineProps.builder()
+                        .version(PostgresEngineVersion.VER_17_2).build()))
+                .vpc(vpc) // conectar o banco de dados com a vpc
+                .instanceType(InstanceType.of(InstanceClass.BURSTABLE2, InstanceSize.MICRO)) // No LocalStack nao importa mas na aws sim
+                .allocatedStorage(20)
+                .credentials(Credentials.fromGeneratedSecret("admin_user")) // Vai pegar o username e gerar um secret pra esse username e vai aplicar automaticamente pro banco de daods
+                .databaseName(dbName)
+                .removalPolicy(RemovalPolicy.DESTROY) // Sempre que destruirmos uma stack tambem vai destruir os dados do banco de dados (nao se faz isso em prod)
                 .build();
     }
 
