@@ -6,6 +6,7 @@ import software.amazon.awscdk.services.ec2.InstanceType;
 import software.amazon.awscdk.services.ec2.Vpc;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.rds.*;
+import software.amazon.awscdk.services.route53.CfnHealthCheck;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
@@ -20,6 +21,12 @@ public class LocalStack extends Stack {
 
         DatabaseInstance patientServiceDb =
                 createDatabase("PatientServiceDb", "patient-service-db");
+
+        CfnHealthCheck authDbHealthCheck =
+                createDbHealthCheck(authServiceDb, "AuthServiceDbHealthCheck");
+
+        CfnHealthCheck patientDbHealthCheck =
+                createDbHealthCheck(patientServiceDb, "PatientServiceDbHealthCheck");
     }
 
     private Vpc createVpc() {
@@ -40,6 +47,18 @@ public class LocalStack extends Stack {
                 .credentials(Credentials.fromGeneratedSecret("admin_user")) // Vai pegar o username e gerar um secret pra esse username e vai aplicar automaticamente pro banco de daods
                 .databaseName(dbName)
                 .removalPolicy(RemovalPolicy.DESTROY) // Sempre que destruirmos uma stack tambem vai destruir os dados do banco de dados (nao se faz isso em prod)
+                .build();
+    }
+
+    private CfnHealthCheck createDbHealthCheck(DatabaseInstance db, String id) {
+        return CfnHealthCheck.Builder.create(this, id)
+                .healthCheckConfig(CfnHealthCheck.HealthCheckConfigProperty.builder()
+                        .type("TCP")
+                        .port(Token.asNumber(db.getDbInstanceEndpointPort())) // Converte a porta do db para numero
+                        .ipAddress(db.getDbInstanceEndpointAddress())
+                        .requestInterval(30) // checa a cada 30 segundos
+                        .failureThreshold(3) // tentar 3 vezes, 1 a cada 30 segundos antes de reportar uma falha
+                        .build())
                 .build();
     }
 
