@@ -1,8 +1,10 @@
 package com.pm.stack;
 
+import software.amazon.awscdk.services.ecs.Cluster;
 import software.amazon.awscdk.services.ec2.*;
 import software.amazon.awscdk.*;
 import software.amazon.awscdk.services.ec2.InstanceType;
+import software.amazon.awscdk.services.ecs.CloudMapNamespaceOptions;
 import software.amazon.awscdk.services.msk.CfnCluster;
 import software.amazon.awscdk.services.rds.*;
 import software.amazon.awscdk.services.route53.CfnHealthCheck;
@@ -11,6 +13,7 @@ import java.util.stream.Collectors;
 
 public class LocalStack extends Stack {
     private final Vpc vpc;
+    private final Cluster ecsCluster;
 
     public LocalStack(final App scope, final String id, final StackProps props) {
         super(scope, id, props);
@@ -30,6 +33,8 @@ public class LocalStack extends Stack {
                 createDbHealthCheck(patientServiceDb, "PatientServiceDbHealthCheck");
 
         CfnCluster mskCluster = createMskCluster();
+
+        this.ecsCluster = createEcsCluster();
     }
 
     private Vpc createVpc() {
@@ -74,8 +79,18 @@ public class LocalStack extends Stack {
                     .instanceType("kafka.m5.xlarge")
                     .clientSubnets(vpc.getPrivateSubnets().stream().map(
                             ISubnet::getSubnetId).collect(Collectors.toList())) // Pega todos os private subnets da vpc como uma lista e passa essa para o clientSubenets como argumento
-                    .brokerAzDistribution("DEFAULT").build()); // Especifica como os brokers sao distribuidos pelas AZs
+                    .brokerAzDistribution("DEFAULT").build())
+            .build(); // Especifica como os brokers sao distribuidos pelas AZs
 
+    }
+
+    private Cluster createEcsCluster() {
+        return software.amazon.awscdk.services.ecs.Cluster.Builder.create(this, "PatientManagementCluster")
+                .vpc(vpc)
+                .defaultCloudMapNamespace(CloudMapNamespaceOptions.builder()
+                        .name("patient-management.local")
+                        .build())
+                .build();
     }
 
     public static void main(String[] args) {
