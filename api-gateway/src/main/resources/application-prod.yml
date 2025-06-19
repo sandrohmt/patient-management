@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      routes:
+        - id: auth-service-route
+          uri: http://host.docker.internal:4005
+          predicates:
+            - Path=/auth/**
+          filters:
+            - StripPrefix=1 # Tira o conteúdo depois da primeira barra até a próxima, nesse caso, tira o auth
+          # REST Client -> http://localhost:4004/auth/login
+          # API Gateway -> http://auth-service:4005/login
+
+        - id: patient-service-route
+          uri: http://host.docker.internal:4000
+          predicates: # Quais requests s�o enviados para o patient-service
+            - Path=/api/patients/**
+          filters: # Um jeito de reescrever o predicate antes de encaminhar a solicita��o para o patient-service uri
+            - StripPrefix=1
+            - JwtValidation # O JwtValidationGatewayFilterFactory vai afetar todas as rotas do patient-service, o filtro vai procurar uma classe que tem GatewayFilterFactory no nome
+          # REST Client -> http://localhost:4004/api/patients
+          # API Gateway -> http://patient-service:4000/patients    aqui aplica o filters
+          # Patient Service (Spring Boot App) -> /patients -> Patients Array
+          # Em resumo, o frontend chama o API Gateway e ele chama o patient-service baseado nas regras acima
+
+        - id: api-docs-patient-route
+          uri: http://host.docker.internal:4000
+          predicates:
+            - Path=/api-docs/patients
+          filters:
+            - RewritePath=/api-docs/patients,/v3/api-docs # Reescreve o path antes da virgula pro depois da virgula
+          # REST-Client -> http://localhost:4004/api-docs/patients
+          # API Gateway -> http://patient-service:4000/v3/api-docs
+
+        - id: api-docs-auth-route
+          uri: http://host.docker.internal:4005
+          predicates:
+            - Path=/api-docs/auth
+          filters:
+            - RewritePath=/api-docs/auth,/v3/api-docs
+
+server:
+  port: 4004
